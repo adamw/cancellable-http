@@ -5,7 +5,9 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   scalaVersion := "2.13.10"
 )
 
+val logback = "ch.qos.logback" % "logback-classic" % "1.4.5"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.2.15" % Test
+val http4sVersion = "0.23.17"
 
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
@@ -17,8 +19,9 @@ lazy val core: Project = (project in file("core"))
   .settings(
     name := "core",
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.tapir" %% "tapir-netty-server" % "1.2.5",
-      "ch.qos.logback" % "logback-classic" % "1.4.5",
+      "org.http4s" %% "http4s-ember-server" % http4sVersion,
+      "org.http4s" %% "http4s-dsl" % http4sVersion,
+      logback,
       scalaTest
     )
   )
@@ -27,6 +30,15 @@ lazy val asyncHttpClient = (project in file("async-http-client"))
   .settings(commonSettings: _*)
   .settings(
     name := "async-http-client",
-    libraryDependencies += "org.asynchttpclient" % "async-http-client" % "2.12.3"
+    libraryDependencies ++= Seq(
+      "org.asynchttpclient" % "async-http-client" % "2.12.3",
+      logback
+    )
   )
-  .dependsOn(core)
+
+lazy val httpClient = (project in file("http-client"))
+  .settings(commonSettings: _*)
+  .settings(
+    name := "http-client",
+    libraryDependencies += logback
+  )
