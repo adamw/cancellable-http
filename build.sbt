@@ -6,23 +6,32 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
 )
 
 val logback = "ch.qos.logback" % "logback-classic" % "1.4.5"
-val scalaTest = "org.scalatest" %% "scalatest" % "3.2.15" % Test
 val http4sVersion = "0.23.17"
 
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
   .settings(publishArtifact := false, name := "cancellable-http")
-  .aggregate(core)
+  .aggregate(serverHttp4s, serverAkkaHttp, asyncHttpClient, httpClient)
 
-lazy val core: Project = (project in file("core"))
+lazy val serverHttp4s: Project = (project in file("server-http4s"))
   .settings(commonSettings: _*)
   .settings(
-    name := "core",
+    name := "server-http4s",
     libraryDependencies ++= Seq(
       "org.http4s" %% "http4s-ember-server" % http4sVersion,
       "org.http4s" %% "http4s-dsl" % http4sVersion,
-      logback,
-      scalaTest
+      logback
+    )
+  )
+
+lazy val serverAkkaHttp: Project = (project in file("server-akka-http"))
+  .settings(commonSettings: _*)
+  .settings(
+    name := "server-akka-http",
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-stream" % "2.6.20",
+      "com.typesafe.akka" %% "akka-http" % "10.2.10",
+      logback
     )
   )
 
