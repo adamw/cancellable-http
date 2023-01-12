@@ -12,7 +12,7 @@ val jettyVersion = "11.0.13"
 lazy val rootProject = (project in file("."))
   .settings(commonSettings)
   .settings(publishArtifact := false, name := "cancellable-http")
-  .aggregate(serverHttp4s, serverAkkaHttp, serverJetty, asyncHttpClient, httpClient)
+  .aggregate(serverHttp4s, serverAkkaHttp, serverJetty, asyncHttpClient, httpClient, okHttpClient)
 
 lazy val serverHttp4s: Project = (project in file("server-http4s"))
   .settings(commonSettings)
@@ -62,4 +62,14 @@ lazy val httpClient = (project in file("http-client"))
   .settings(
     name := "http-client",
     libraryDependencies += logback
+  )
+
+lazy val okHttpClient = (project in file("ok-http-client"))
+  .settings(commonSettings)
+  .settings(
+    name := "ok-http-client",
+    libraryDependencies ++= Seq(
+      "com.squareup.okhttp3" % "okhttp" % "4.10.0",
+      logback
+    )
   )
