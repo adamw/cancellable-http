@@ -73,3 +73,13 @@ lazy val okHttpClient = (project in file("ok-http-client"))
       logback
     )
   )
+
+lazy val http4sClient = (project in file("http4s-client"))
+  .settings(commonSettings)
+  .settings(
+    name := "http4s-client",
+    libraryDependencies ++= Seq(
+      "org.http4s" %% "http4s-ember-client" % http4sVersion,
+      logback
+    )
+  )
