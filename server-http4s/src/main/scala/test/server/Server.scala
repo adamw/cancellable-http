@@ -21,7 +21,17 @@ object Server extends IOApp {
     case GET -> Root / "wait" =>
       IO.sleep(2.seconds) *> IO(log.info("Sending wait response")) *> Ok(LargeBody)
     case GET -> Root / "stream" =>
-      Ok(Stream.emit(SmallBody).covary[IO].repeat.take(20).metered(100.millis))
+      Ok(
+        Stream
+          .emit(SmallBody)
+          .covary[IO]
+          .repeat
+          .take(20)
+          .metered(100.millis)
+          .map(x => { log.info("Sending chunk"); x })
+          .handleErrorWith(e => Stream.exec(IO(log.info("Got error", e))) ++ Stream.raiseError[IO](e))
+          .onFinalizeCase(e => IO(log.info(s"Finalize: $e")))
+      )
   }
 
   private val server = EmberServerBuilder

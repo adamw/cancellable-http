@@ -35,7 +35,15 @@ object Server extends App {
         complete {
           HttpEntity.apply(
             MediaTypes.`text/plain`.withMissingCharset,
-            Source.repeat(ByteString(SmallBody)).take(20).throttle(1, 100.millis)
+            Source
+              .repeat(ByteString(SmallBody))
+              .take(30)
+              .throttle(1, 100.millis)
+              .map(x => { log.info("Sending chunk"); x })
+              .mapError { case e: Exception =>
+                log.info("Got error", e)
+                e
+              }
           )
         }
       }

@@ -20,7 +20,7 @@ object Run extends App {
 
   log.info("Sending ...")
   val f = client.sendAsync(
-    HttpRequest.newBuilder(new URI("http://localhost:8080/wait")).GET().version(HttpClient.Version.HTTP_1_1).build(),
+    HttpRequest.newBuilder(new URI("http://localhost:8080/stream")).GET().version(HttpClient.Version.HTTP_1_1).build(),
     BodyHandlers.ofString()
   )
   log.info("Sent ...")
