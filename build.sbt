@@ -7,14 +7,15 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
 
 val logback = "ch.qos.logback" % "logback-classic" % "1.4.5"
 val http4sVersion = "0.23.17"
+val jettyVersion = "11.0.13"
 
 lazy val rootProject = (project in file("."))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(publishArtifact := false, name := "cancellable-http")
-  .aggregate(serverHttp4s, serverAkkaHttp, asyncHttpClient, httpClient)
+  .aggregate(serverHttp4s, serverAkkaHttp, serverJetty, asyncHttpClient, httpClient)
 
 lazy val serverHttp4s: Project = (project in file("server-http4s"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(
     name := "server-http4s",
     libraryDependencies ++= Seq(
@@ -25,7 +26,7 @@ lazy val serverHttp4s: Project = (project in file("server-http4s"))
   )
 
 lazy val serverAkkaHttp: Project = (project in file("server-akka-http"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(
     name := "server-akka-http",
     libraryDependencies ++= Seq(
@@ -35,8 +36,19 @@ lazy val serverAkkaHttp: Project = (project in file("server-akka-http"))
     )
   )
 
+lazy val serverJetty: Project = (project in file("server-jetty"))
+  .settings(commonSettings)
+  .settings(
+    name := "server-jetty",
+    libraryDependencies ++= Seq(
+      "org.eclipse.jetty" % "jetty-server" % jettyVersion,
+      "org.eclipse.jetty.http2" % "http2-server" % jettyVersion,
+      logback
+    )
+  )
+
 lazy val asyncHttpClient = (project in file("async-http-client"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(
     name := "async-http-client",
     libraryDependencies ++= Seq(
@@ -46,7 +58,7 @@ lazy val asyncHttpClient = (project in file("async-http-client"))
   )
 
 lazy val httpClient = (project in file("http-client"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(
     name := "http-client",
     libraryDependencies += logback

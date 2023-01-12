@@ -1,6 +1,5 @@
 package test.server
 
-import cats.arrow.FunctionK
 import cats.effect._
 import com.comcast.ip4s.IpLiteralSyntax
 import fs2._
